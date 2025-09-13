@@ -73,7 +73,7 @@ const onFormSubmit = () => {
   <v-responsive>
     <v-app>
       <!-- Top Logo -->
-      <v-app-bar flat height="150" style="background-color: #f4f5f7">
+      <v-app-bar flat height="150" class="top-logo-bar">
         <v-container class="d-flex justify-center align-center fill-height pa-0">
           <img
             :src="imgWel"
@@ -87,13 +87,18 @@ const onFormSubmit = () => {
       <v-main>
         <v-container>
           <v-row class="align-center">
+             <!-- Image Section -->
+            <v-col cols="12" md="4" class="signup-picture pa-6 d-flex justify-center mt-6 mt-md-0">
+              <img
+                :src="imgSix"
+                alt="Pets"
+                style="width: 80%; max-width: 500px; height: auto" 
+              />
+            </v-col>
             <!-- Registration Form -->
-            <v-col cols="12" md="5" class="mt-8">
-              <v-card class="pa-4">
-                <h1 style="color: #8c52ff" class="d-flex justify-center"><b>REGISTER NOW</b></h1>
-                <p class="d-flex justify-center" style="margin: 2%; color: skyblue">
-                  Create account to get started
-                </p>
+            <v-col cols="12" md="8" class="mt-8 mb-5">
+              <v-card class="register pa-4">
+                <h1 style="color: #8c52ff" class="d-flex justify-center"><b>REGISTER NOW!</b></h1>
 
                 <AlertNotification
                   :form-success-message="formAction.formSuccessMessage"
@@ -166,7 +171,7 @@ const onFormSubmit = () => {
                   </v-text-field>
 
                   <v-btn
-                    class="mt-4"
+                    class="button mt-4"
                     type="submit"
                     style="background-color: skyblue"
                     block
@@ -177,64 +182,140 @@ const onFormSubmit = () => {
                   </v-btn>
                 </v-form>
 
-                <!-- Social login section -->
-                <div class="text-center mt-6 mb-4">
-                  <p>Or continue with</p>
-                  <div class="d-flex justify-center flex-wrap gap-4 mt-2">
-                    <a
-                      href="https://web.facebook.com/people/Tailcare-Tailcare/pfbid0cMKJ9HjWU3BgtcnEBTaPBoWfTa6gizYes15NZVPwqk4k1f88AV8g1xbh46d4V3XVl/"
-                      target="_blank"
-                    >
-                      <v-btn icon>
-                        <v-img :src="imgFb" alt="Facebook" width="24" height="24" />
-                      </v-btn>
-                    </a>
-                    <a
-                      href="https://www.instagram.com/tailcare_2025?igsh=MWJzdTFzdHd3cHFvaQ%3D%3D"
-                      target="_blank"
-                    >
-                      <v-btn icon>
-                        <v-img :src="imgInsta" alt="Instagram" width="24" height="24" />
-                      </v-btn>
-                    </a>
-                    <a href="mailto:tailcare2025@gmail.com">
-                      <v-btn icon>
-                        <v-img :src="imgEmail" alt="Email" width="24" height="24" />
-                      </v-btn>
-                    </a>
-                  </div>
-                </div>
-
-                <div class="text-center">
+                <div class="text-center mt-3">
                   <span>Already have an account?</span>
                   <RouterLink to="/" style="color: skyblue"> Log In</RouterLink>
                 </div>
               </v-card>
             </v-col>
-
-            <!-- Image Section -->
-            <v-col cols="12" md="7" class="d-flex justify-center mt-6 mt-md-0">
-              <img
-                :src="imgSix"
-                alt="Pets"
-                style="max-width: 90%; height: auto; object-fit: cover; border-radius: 8px"
-              />
-            </v-col>
           </v-row>
         </v-container>
       </v-main>
-
-      <!-- Footer -->
-      <v-footer app class="justify-center" style="background-color: #f4f5f7">
-        <div class="text-center" style="color: #8c52ff">
-          <p>TailCare@2025</p>
-        </div>
-      </v-footer>
     </v-app>
   </v-responsive>
 </template>
 
 <style scoped>
+
+.top-logo-bar {
+  background: linear-gradient(135deg, #f5d5e0, #bb9ac9);
+  color: #4a0a5b;
+}
+
+.signup-picture {
+  display: flex;
+  flex-direction: column; /* always vertical */
+  align-items: center;
+  justify-content: center;
+  min-height: 30vh;
+  width: 100%;
+  text-align: center;
+  background: linear-gradient(135deg, #f5d5e0, #bb9ac9);
+  color: #4a0a5b;
+  padding: 2rem;
+  box-sizing: border-box;
+  gap: 1rem;
+  animation: fadeBg 6s ease-in-out infinite alternate;
+}
+
+/* Subtle animated gradient for soul effect */
+@keyframes fadeBg {
+  0% {
+    background: linear-gradient(135deg, #f5d5e0, #bb9ac9);
+  }
+  100% {
+    background: linear-gradient(135deg, #d9b6e3, #f5d5e0);
+  }
+}
+
+.signup-picture img {
+  animation: float 4s ease-in-out infinite;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+/*register-text*/
+.register h1 {
+  font-family: 'Baloo 2', cursive;
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  animation: bounce 2s ease-in-out infinite;
+}
+
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+
+/*signup button*/
+button {
+  padding: 0.75rem 1.5rem;
+  border: none;
+   background: linear-gradient(135deg, #f5d5e0, #bb9ac9);
+  color: #4a0a5b;
+  border-radius: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  transition:
+    background 0.3s,
+    transform 0.2s,
+    box-shadow 0.3s;
+  width: 160px;
+}
+button:hover {
+  background-color: #8c52ff;
+  color: white;
+  transform: scale(1.05);
+  box-shadow: 0 6px 18px rgba(140, 82, 255, 0.3);
+}
+
+/* Card hover soul effect */
+.v-card {
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(140, 82, 255, 0.15);
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+.v-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 8px 30px rgba(140, 82, 255, 0.25);
+}
+
+/* Input fields focus glow */
+.v-text-field input:focus {
+  border-bottom: 2px solid #8c52ff !important;
+  transition: border 0.3s ease;
+  box-shadow: 0 0 8px rgba(140, 82, 255, 0.3);
+}
+
+/* Links hover pulse */
+a {
+  transition:
+    color 0.3s ease,
+    transform 0.2s ease;
+}
+a:hover {
+  color: #8c52ff !important;
+  transform: scale(1.05);
+}
+
 .text-center p {
   margin-bottom: 10px;
 }
