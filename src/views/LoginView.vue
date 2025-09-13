@@ -182,7 +182,7 @@ const onFormSubmit = () => {
 
                   <div class="text-center">
                     <span>Don't have an account?</span>
-                    <RouterLink to="/sign" style="color: skyblue"> Sign Up</RouterLink>
+                    <RouterLink to="/signup" style="color: skyblue"> Sign Up</RouterLink>
                   </div>
                 </v-card>
               </div>
