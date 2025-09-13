@@ -7,9 +7,6 @@ import { formActionDefault, supabase } from '@/utils/supabase'
 // Image Assets
 import imgFour from '@/assets/images/four.png'
 import imgWel from '@/assets/images/welcome.png'
-import imgEmail from '@/assets/images/email.png'
-import imgFb from '@/assets/images/fb.png'
-import imgInsta from '@/assets/images/insta.png'
 
 // Components
 import AlertNotification from '../../common/AlertNotification.vue'
@@ -70,7 +67,7 @@ const onFormSubmit = () => {
   <v-responsive>
     <v-app>
       <!-- Top Logo -->
-      <v-app-bar flat height="150" style="background-color: #f4f5f7">
+      <v-app-bar flat height="150" class="top-logo-bar">
         <v-container class="d-flex justify-center align-center fill-height pa-0">
           <img
             :src="imgWel"
@@ -82,23 +79,19 @@ const onFormSubmit = () => {
 
       <!-- Main Content -->
       <v-main>
-        <v-container fluid>
+        <v-container fluid class="mt-7">
           <v-row no-gutters>
             <!-- Left Image Section -->
-            <v-col
-              cols="12"
-              md="6"
-              class="pa-6 d-flex align-center justify-center"
-              style="background-color: #f4f5f7"
-            >
-              <img :src="imgFour" alt="Pets" style="width: 100%; max-width: 600px; height: auto" />
+            <v-col cols="12" md="4" class="login-picture pa-6 d-flex align-center justify-center">
+              <img :src="imgFour" alt="Pets" style="width: 80%; max-width: 500px; height: auto" />
             </v-col>
 
             <!-- Right Form Section -->
-            <v-col cols="12" md="6" class="pa-6">
-              <div class="pa-6">
-                <h1 class="text-h4 font-weight-bold mb-2" style="color: #8c52ff">WELCOME OWNERS</h1>
-                <p class="mb-6" style="color: skyblue">Log in to your account</p>
+            <v-col cols="12" md="8" class="pa-6">
+              <div class="welcome pa-6">
+                <h1 class="text-h5 text-center font-weight-bold mb-2" style="color: #8c52ff">
+                  WELCOME OWNERS!
+                </h1>
 
                 <v-card class="pa-4">
                   <v-form ref="refVForm" @submit.prevent="onFormSubmit">
@@ -137,8 +130,7 @@ const onFormSubmit = () => {
 
                     <!-- Submit Button -->
                     <v-btn
-                      class="mt-4"
-                      style="background-color: skyblue"
+                      class="button mt-4"
                       type="submit"
                       block
                       :loading="formAction.formProcess"
@@ -148,41 +140,13 @@ const onFormSubmit = () => {
                   </v-form>
 
                   <!-- Forgot Password -->
-                  <div class="d-flex justify-end mt-2">
+                  <div class="text-center mt-4">
                     <RouterLink to="/" style="color: skyblue"> Forgot your password? </RouterLink>
                   </div>
 
-                  <!-- Social login -->
-                  <div class="text-center mt-6 mb-4">
-                    <p>Or continue with</p>
-                    <div class="d-flex justify-center flex-wrap gap-4 mt-2">
-                      <a
-                        href="https://web.facebook.com/people/Tailcare-Tailcare/pfbid0cMKJ9HjWU3BgtcnEBTaPBoWfTa6gizYes15NZVPwqk4k1f88AV8g1xbh46d4V3XVl/"
-                        target="_blank"
-                      >
-                        <v-btn icon>
-                          <v-img :src="imgFb" alt="Facebook" width="24" height="24" />
-                        </v-btn>
-                      </a>
-                      <a
-                        href="https://www.instagram.com/tailcare_2025?igsh=MWJzdTFzdHd3cHFvaQ%3D%3D"
-                        target="_blank"
-                      >
-                        <v-btn icon>
-                          <v-img :src="imgInsta" alt="Instagram" width="24" height="24" />
-                        </v-btn>
-                      </a>
-                      <a href="mailto:tailcare2025@gmail.com">
-                        <v-btn icon>
-                          <v-img :src="imgEmail" alt="Email" width="24" height="24" />
-                        </v-btn>
-                      </a>
-                    </div>
-                  </div>
-
-                  <div class="text-center">
+                  <div class="text-center mt-2">
                     <span>Don't have an account?</span>
-                    <RouterLink to="/sign" style="color: skyblue"> Sign Up</RouterLink>
+                    <RouterLink to="/signup" style="color: skyblue"> Sign Up</RouterLink>
                   </div>
                 </v-card>
               </div>
@@ -190,18 +154,147 @@ const onFormSubmit = () => {
           </v-row>
         </v-container>
       </v-main>
-
-      <!-- Footer -->
-      <v-footer app class="justify-center" style="background-color: #f4f5f7">
-        <div class="text-center" style="color: #8c52ff">
-          <p>TailCare@2025</p>
-        </div>
-      </v-footer>
     </v-app>
   </v-responsive>
 </template>
 
 <style scoped>
+
+.top-logo-bar {
+  background: linear-gradient(135deg, #f5d5e0, #bb9ac9);
+  color: #4a0a5b;
+}
+
+.login-picture {
+  display: flex;
+  flex-direction: column; /* always vertical */
+  align-items: center;
+  justify-content: center;
+  min-height: 30vh;
+  width: 100%;
+  text-align: center;
+  background: linear-gradient(135deg, #f5d5e0, #bb9ac9);
+  color: #4a0a5b;
+  padding: 2rem;
+  box-sizing: border-box;
+  gap: 1rem;
+  animation: fadeBg 6s ease-in-out infinite alternate;
+}
+
+/* Subtle animated gradient for soul effect */
+@keyframes fadeBg {
+  0% {
+    background: linear-gradient(135deg, #f5d5e0, #bb9ac9);
+  }
+  100% {
+    background: linear-gradient(135deg, #d9b6e3, #f5d5e0);
+  }
+}
+
+/*welcome-text*/
+.welcome h1 {
+  font-family: 'Baloo 2', cursive;
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  animation: bounce 2s ease-in-out infinite;
+}
+
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+/*login button*/
+button {
+  padding: 0.75rem 1.5rem;
+  border: none;
+   background: linear-gradient(135deg, #f5d5e0, #bb9ac9);
+  color: #4a0a5b;
+  border-radius: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  transition:
+    background 0.3s,
+    transform 0.2s,
+    box-shadow 0.3s;
+  width: 160px;
+}
+button:hover {
+  background-color: #8c52ff;
+  color: white;
+  transform: scale(1.05);
+  box-shadow: 0 6px 18px rgba(140, 82, 255, 0.3);
+}
+
+/* Smooth fade-in for main section */
+.v-main {
+  animation: fadeIn 1.2s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Floating pets image */
+.login-picture img {
+  animation: float 4s ease-in-out infinite;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+/* Card hover soul effect */
+.v-card {
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(140, 82, 255, 0.15);
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+.v-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 8px 30px rgba(140, 82, 255, 0.25);
+}
+
+/* Input fields focus glow */
+.v-text-field input:focus {
+  border-bottom: 2px solid #8c52ff !important;
+  transition: border 0.3s ease;
+  box-shadow: 0 0 8px rgba(140, 82, 255, 0.3);
+}
+
+/* Links hover pulse */
+a {
+  transition:
+    color 0.3s ease,
+    transform 0.2s ease;
+}
+a:hover {
+  color: #8c52ff !important;
+  transform: scale(1.05);
+}
+
 .text-center p {
   margin-bottom: 10px;
 }
