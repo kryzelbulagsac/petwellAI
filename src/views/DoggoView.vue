@@ -5,13 +5,12 @@ import { useRouter } from 'vue-router'
 import imgWel from '@/assets/images/welcome.png'
 
 const router = useRouter()
-// Initializing theme and other states
-const drawer = ref(true)
+const drawer = ref(false) // mobile-friendly (closed by default)
 const theme = ref('light')
 const currentTime = ref(new Date().toLocaleString())
 const formAction = ref({ ...formActionDefault })
 
-const activeMenu = ref(null) // 'consult' | 'type' | 'cat' | 'dog' | null
+const activeMenu = ref(null)
 
 const setMenu = (menu) => {
   activeMenu.value = activeMenu.value === menu ? null : menu
@@ -64,7 +63,6 @@ const onLogout = async () => {
 const headlines = ref([])
 let intervalId = null
 
-// Fetch RSS from DailyPaws
 const fetchRSS = async () => {
   try {
     const response = await fetch(
@@ -88,7 +86,6 @@ const fetchRSS = async () => {
 
 onMounted(() => {
   fetchRSS()
-  // refresh every 5 minutes
   intervalId = setInterval(fetchRSS, 300000)
 })
 
@@ -98,7 +95,6 @@ onBeforeUnmount(() => {
 
 const goToLink = (url) => window.open(url, '_blank')
 
-// live clock
 setInterval(() => {
   currentTime.value = new Date().toLocaleString()
 }, 1000)
@@ -106,28 +102,29 @@ setInterval(() => {
 
 <template>
   <v-app>
-    <!-- App bar with sidebar toggle -->
+    <!-- App bar -->
     <v-app-bar app color="var(--navbar-bg)">
       <v-app-bar-nav-icon @click="drawer = !drawer" />
-      <v-toolbar-title class="custom-title">TailCare Dashboard</v-toolbar-title>
+      <v-toolbar-title class="custom-title"> </v-toolbar-title>
     </v-app-bar>
 
     <v-main>
-      <!-- Sidebar with toggle -->
+      <!-- Sidebar -->
       <v-navigation-drawer
         v-model="drawer"
         app
-        permanent
+        temporary
+        lg-permanent
         width="250"
         :style="{ backgroundColor: 'var(--navbar-bg)' }"
       >
         <v-container class="text-center mt-4">
-          <img :src="imgWel" alt="Welcome Icon" style="height: 100px; width: auto" />
+          <img :src="imgWel" alt="Welcome Icon" class="welcome-img" />
           <h1 class="text-h5 font-weight-bold custom-title">Welcome Owner</h1>
         </v-container>
 
         <v-list dense>
-          <v-list-item to="/layout" component="RouterLink" class="menu-item">
+          <v-list-item to="/profile" component="RouterLink" class="menu-item">
             <v-list-item-title>Profile</v-list-item-title>
           </v-list-item>
           <v-list-item class="menu-item">
@@ -219,7 +216,8 @@ setInterval(() => {
         </v-list>
       </v-navigation-drawer>
 
-      <v-container fluid style="max-height: calc(100vh - 80px); overflow-y: auto">
+      <v-container fluid>
+        <!-- Pet News -->
         <v-row>
           <v-col cols="12" class="second-column-background">
             <v-card
@@ -247,8 +245,9 @@ setInterval(() => {
           </v-col>
         </v-row>
 
+        <!-- Video -->
         <v-card
-          max-width="800"
+          max-width="100%"
           class="video-card mx-auto mt-5"
           :style="{ backgroundColor: 'var(--card-bg)' }"
         >
@@ -269,6 +268,24 @@ setInterval(() => {
         </v-card>
       </v-container>
     </v-main>
+
+    <!-- ✅ Bottom Navigation -->
+    <v-bottom-navigation app grow height="64" color="var(--navbar-bg)">
+      <v-btn value="home" @click="router.push('/home')">
+        <v-icon>mdi-home</v-icon>
+        Home
+      </v-btn>
+
+      <v-btn value="consult" @click="router.push('/consult')">
+        <v-icon>mdi-stethoscope</v-icon>
+        Consult
+      </v-btn>
+
+      <v-btn value="profile" @click="router.push('/profile')">
+        <v-icon>mdi-account</v-icon>
+        Profile
+      </v-btn>
+    </v-bottom-navigation>
   </v-app>
 </template>
 
@@ -331,5 +348,26 @@ setInterval(() => {
 .video-card .v-card-title {
   font-size: 18px;
   font-weight: bold;
+}
+
+.welcome-img {
+  height: 80px;
+  width: auto;
+}
+
+@media (max-width: 600px) {
+  .custom-title {
+    font-size: 18px;
+  }
+  .menu-item {
+    font-size: 14px;
+    padding: 12px 16px;
+  }
+  .welcome-img {
+    height: 60px;
+    max-width: 100%;
+    display: block;
+    margin: 0 auto;
+  }
 }
 </style>
