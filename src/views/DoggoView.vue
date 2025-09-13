@@ -1,6 +1,6 @@
 <script setup>
 import { supabase, formActionDefault } from '@/utils/supabase'
-import { ref, watchEffect } from 'vue'
+import { ref, watchEffect, onMounted, onBeforeUnmount } from 'vue'
 import { useRouter } from 'vue-router'
 import imgWel from '@/assets/images/welcome.png'
 
@@ -60,55 +60,45 @@ const onLogout = async () => {
   router.replace('/')
 }
 
-const headlines = ref([
-  {
-    title:
-      'Glamorous dog owner gifted $35k to "say goodbye" to pet that bit her announces she\'s actually KEEPING him',
-    summary:
-      'A dog owner surprised everyone when she decided to keep her dog despite a biting incident.',
-    link: 'https://www.dailymail.co.uk/news/article-14644101/glamorous-dog-owner-shayna-crimo-pet-bit-keeping.html',
-    imgSrc:
-      'https://th.bing.com/th?id=OVFT.Q-NQH9dLgneJh9HPsKQqby&pid=News&w=300&h=186&c=14&rs=2&qlt=90&dpr=1.3',
-  },
-  {
-    title: '260 Clever Boy Dog Names',
-    summary: 'The ultimate list of dog names for your boy dog.',
-    link: 'https://www.dailypaws.com/dogs-puppies/dog-names/boy-dog-names',
-    imgSrc:
-      'https://th.bing.com/th/id/ODL.eb53ed4a16b30b7e24b8c753d355e524?w=197&h=112&c=7&rs=1&qlt=80&r=0&o=6&dpr=1.3&pid=RichNav',
-  },
-  {
-    title: 'Absolutely Gigantic Maine Coon Cat Must Be Seen To Be Believed',
-    summary: 'This Maine Coon cat is massive and simply amazing.',
-    link: 'https://pethelpful.com/pet-news/maine-coon-big-as-child',
-    imgSrc:
-      'https://th.bing.com/th/id/ODL.9163eedf3df4aa08bcd1550685b995c1?w=197&h=112&c=7&rs=1&qlt=80&r=0&o=6&dpr=1.3&pid=RichNav',
-  },
-  {
-    title: 'Pet Health - Fox News',
-    summary: 'Stay updated on the latest pet health news.',
-    link: 'https://www.foxnews.com/category/health/healthy-living/pet-health?msockid=0b80acf68d61624d2560b81f8cfc6339',
-    imgSrc:
-      'https://th.bing.com/th/id/OIP.L9UfDQ4n2gjwgQC4rQS74wAAAA?w=80&h=80&c=1&vt=10&bgcl=0ad481&r=0&o=6&dpr=1.3&pid=ImgRC',
-  },
-  {
-    title: '142 of the Cutest Food Names for Dogs Who Love to Snack',
-    summary: 'A fun list of food-inspired names for your furry friend.',
-    link: 'https://www.dailypaws.com/dogs-puppies/dog-names/food-names-for-dogs',
-    imgSrc:
-      'https://th.bing.com/th/id/ODL.ff1fcd9a9268ae035260e3a16747d5ee?w=197&h=112&c=7&rs=1&qlt=80&r=0&o=6&dpr=1.3&pid=RichNav',
-  },
-  {
-    title: 'PET NEWS - PET HELP',
-    summary: 'All the latest news and updates for pet lovers.',
-    link: 'https://pethelpful.com/pet-news',
-    imgSrc:
-      'https://th.bing.com/th/id/OIP.2mGFoXG3U2uR75QaSNPQ6AHaHa?w=80&h=80&c=1&vt=10&bgcl=346cfe&r=0&o=6&dpr=1.3&pid=ImgRC',
-  },
-])
+// 📰 Headlines state
+const headlines = ref([])
+let intervalId = null
+
+// Fetch RSS from DailyPaws
+const fetchRSS = async () => {
+  try {
+    const response = await fetch(
+      `https://api.rss2json.com/v1/api.json?rss_url=https://feeds-api.dotdashmeredith.com/v1/rss/google/01f5a196-39ac-4b84-9129-a22a69cc618d&_=${Date.now()}`,
+    )
+    const data = await response.json()
+
+    headlines.value = data.items.slice(0, 6).map((item) => ({
+      title: item.title,
+      summary: item.description,
+      link: item.link,
+      imgSrc:
+        item.enclosure?.link ||
+        item.thumbnail ||
+        'https://via.placeholder.com/300x200.png?text=No+Image',
+    }))
+  } catch (error) {
+    console.error('Error fetching RSS feed:', error)
+  }
+}
+
+onMounted(() => {
+  fetchRSS()
+  // refresh every 5 minutes
+  intervalId = setInterval(fetchRSS, 300000)
+})
+
+onBeforeUnmount(() => {
+  if (intervalId) clearInterval(intervalId)
+})
 
 const goToLink = (url) => window.open(url, '_blank')
 
+// live clock
 setInterval(() => {
   currentTime.value = new Date().toLocaleString()
 }, 1000)
