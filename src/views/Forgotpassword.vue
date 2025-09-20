@@ -15,7 +15,7 @@ const refVForm = ref()
 const formDataDefault = { email: '' }
 const formData = ref({ ...formDataDefault })
 const formAction = ref({ ...formActionDefault })
-const showRedirectMessage = ref(false) // 👈 Added state for redirect animation
+const showRedirectMessage = ref(false) // 👈 redirect animation
 
 // Submit logic
 const onSubmit = async () => {
@@ -27,7 +27,6 @@ const onSubmit = async () => {
     })
 
     if (error) {
-      // ❌ Custom error handling
       if (error.message.includes('invalid') || error.message.includes('not found')) {
         formAction.value.formErrorMessage = '❌ Unsuccessfully sent! Invalid email.'
       } else {
@@ -42,7 +41,6 @@ const onSubmit = async () => {
       // ⏳ Show redirecting message after success
       setTimeout(() => {
         showRedirectMessage.value = true
-        // Redirect after 5s
         setTimeout(() => {
           router.push('/login')
         }, 5000)
@@ -61,30 +59,30 @@ const onFormSubmit = () => {
     if (valid) onSubmit()
   })
 }
+
+// 👈 Back to login
+const goToLogin = () => {
+  router.push('/login')
+}
 </script>
 
 <template>
   <v-responsive>
     <v-app>
-      <!-- Top Logo -->
-      <v-app-bar flat height="150" class="top-logo-bar">
-        <v-container class="d-flex justify-center align-center fill-height pa-0">
-          <img
-            :src="imgWel"
-            alt="TailCare Logo"
-            style="height: 100%; max-height: 130px; object-fit: contain"
-          />
-        </v-container>
-      </v-app-bar>
-
       <!-- Main Content -->
       <v-main>
-        <v-container class="d-flex justify-center align-center" style="min-height: 70vh">
+        <v-container class="d-flex justify-center align-center" style="min-height: 90vh">
           <v-col cols="12" md="6" lg="4">
             <v-card class="glass-card pa-6 text-center">
-              <h4 class="mb-2" style="color: #8c52ff"><b>Forgot Password?</b></h4>
+              <!-- Logo inside the card -->
+              <div class="logo-container mb-1">
+                <img :src="imgWel" alt="TailCare Logo" class="logo-img" />
+              </div>
+
+              <h3 class="mb-2" style="color: #8c52ff"><b>Forgot Password?</b></h3>
               <p class="small-text mb-4">
-                No worries! Enter your registered email and we’ll send you a secure link to reset your password.
+                No worries! Enter your registered email and we’ll send you a secure link to reset
+                your password.
               </p>
 
               <v-form ref="refVForm" @submit.prevent="onFormSubmit">
@@ -96,32 +94,29 @@ const onFormSubmit = () => {
                   prepend-inner-icon="mdi-email"
                   :rules="[requiredValidator, emailValidator]"
                 />
-                <v-btn
-                  class="button mt-4"
-                  type="submit"
-                  block
-                  :loading="formAction.formProcess"
-                >
+                <v-btn class="button mt-4" type="submit" block :loading="formAction.formProcess">
                   Send Reset Link
                 </v-btn>
               </v-form>
 
-              <!-- ✅ Success Message (no emoji) -->
-              <p v-if="formAction.formSuccessMessage" class="success-text mt-3">
+              <!-- Success Message -->
+              <p v-if="formAction.formSuccessMessage" class="success-text mt-4">
                 {{ formAction.formSuccessMessage }}
               </p>
 
-              <!-- ❌ Error Message -->
-              <p v-if="formAction.formErrorMessage" class="error-text mt-3">
+              <!-- Error Message -->
+              <p v-if="formAction.formErrorMessage" class="error-text mt-4">
                 {{ formAction.formErrorMessage }}
               </p>
 
-              <!-- ⏳ Redirect Message with 3-dot animation -->
-              <div
-                v-if="showRedirectMessage"
-                class="redirect-message animate-in mt-3"
-              >
-                Redirecting to login<span class="dots"></span>
+              <!-- Redirect Message with 3-dot animation -->
+              <div v-if="showRedirectMessage" class="redirect-message animate-in mt-3">
+                Redirecting to login<span class="dots">...</span>
+              </div>
+
+              <!-- 👇 Back to Login (only show if no success yet) -->
+              <div v-if="!formAction.formSuccessMessage" class="back-link mt-4" @click="goToLogin">
+                ← Back to Login
               </div>
             </v-card>
           </v-col>
@@ -132,9 +127,37 @@ const onFormSubmit = () => {
 </template>
 
 <style scoped>
+/* 🔥 Logo styling inside card */
+.logo-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.logo-img {
+  height: 150px; /* 👈 make it bigger */
+  max-height: 150px;
+  object-fit: contain;
+}
+
 .top-logo-bar {
-  background: linear-gradient(135deg, #f5d5e0, #bb9ac9);
+  background: transparent; /* Let background animation show through */
   color: #4a0a5b;
+  box-shadow: none;
+}
+
+/* 🔥 Full-page animated background */
+.v-application {
+  background: linear-gradient(135deg, #f5d5e0, #bb9ac9);
+  animation: fadeBg 6s ease-in-out infinite alternate;
+}
+
+@keyframes fadeBg {
+  0% {
+    background: linear-gradient(135deg, #f5d5e0, #bb9ac9);
+  }
+  100% {
+    background: linear-gradient(135deg, #d9b6e3, #f5d5e0);
+  }
 }
 
 .glass-card {
@@ -257,5 +280,19 @@ button:hover {
   100% {
     content: '...';
   }
+}
+
+/* Back to login as link */
+.back-link {
+  color: #6a1b9a;
+  font-weight: 500;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: color 0.3s;
+  text-decoration: none;
+}
+.back-link:hover {
+  color: #4a0a5b;
+  text-decoration: underline;
 }
 </style>
