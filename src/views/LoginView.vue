@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { requiredValidator, emailValidator } from '@/utils/validators'
-import { formActionDefault, supabase } from '@/utils/supabase'
+import { formActionDefault, supabase } from '@/utils/supabase.js'
 
 // Image Assets
 import imgFour from '@/assets/images/four.png'
@@ -141,7 +141,7 @@ const onFormSubmit = () => {
 
                   <!-- Forgot Password -->
                   <div class="text-center mt-4">
-                    <RouterLink to="/" style="color: skyblue"> Forgot your password? </RouterLink>
+                    <RouterLink to="/Forgotpassword" style="color: skyblue"> Forgot your password? </RouterLink>
                   </div>
 
                   <div class="text-center mt-2">

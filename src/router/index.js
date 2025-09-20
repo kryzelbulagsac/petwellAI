@@ -7,6 +7,8 @@ import ProfileView from '@/views/ProfileView.vue'
 import SymptomscatView from '@/views/SymptomscatView.vue'
 import SymptomsdogView from '@/views/SymptomsdogView.vue'
 import HomeView from '../views/HomeView.vue'
+import Forgotpassword from '@/views/Forgotpassword.vue'
+import Resetpassword from '@/views/Resetpassword.vue'
 
 const routes = [
   { path: '/', redirect: '/home' },
@@ -46,6 +48,16 @@ const routes = [
     path: '/cat',
     name: 'cat',
     component: SymptomscatView,
+  },
+  {
+    path: '/Forgotpassword',
+    name: 'forgotpassword',
+    component: Forgotpassword,
+  },
+  {
+    path: '/Resetpassword',
+    name: 'resetpassword',
+    component: Resetpassword
   },
 ]
 

@@ -11,9 +11,6 @@ import AlertNotification from '../../common/AlertNotification.vue'
 import { supabase, formActionDefault } from '@/utils/supabase.js'
 import imgSix from '@/assets/images/six.png'
 import imgWel from '@/assets/images/welcome.png'
-import imgEmail from '@/assets/images/email.png'
-import imgFb from '@/assets/images/fb.png'
-import imgInsta from '@/assets/images/insta.png'
 import { useRouter } from 'vue-router'
 
 // Reactive form state
@@ -173,7 +170,6 @@ const onFormSubmit = () => {
                   <v-btn
                     class="button mt-4"
                     type="submit"
-                    style="background-color: skyblue"
                     block
                     :disabled="formAction.formProcess"
                     :loading="formAction.formProcess"
@@ -184,7 +180,7 @@ const onFormSubmit = () => {
 
                 <div class="text-center mt-3">
                   <span>Already have an account?</span>
-                  <RouterLink to="/" style="color: skyblue"> Log In</RouterLink>
+                  <RouterLink to="/login" style="color: skyblue"> Log In</RouterLink>
                 </div>
               </v-card>
             </v-col>
