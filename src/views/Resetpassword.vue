@@ -54,73 +54,92 @@ const onSubmit = async () => {
   <v-responsive>
     <v-app>
       <v-main>
-        <v-container class="d-flex justify-center align-center" style="min-height: 80vh">
-          <v-col cols="12" md="6" lg="4">
-            <v-card class="glass-card pa-6 text-center">
-              
-              <!-- Logo -->
-              <v-img
-                :src="welcomeImg"
-                alt="Welcome Logo"
-                contain
-                max-height="120"
-                class="mb-4"
-              />
-
-              <h4 class="mb-2 theme-color"><b>Reset Password</b></h4>
-              <p class="small-text mb-4">Enter your new password below.</p>
-
-              <v-form @submit.prevent="onSubmit">
-                <!-- New Password -->
-                <v-text-field
-                  v-model="formData.password"
-                  label="New Password"
-                  :type="showPassword ? 'text' : 'password'"
-                  variant="solo-inverted"
-                  prepend-inner-icon="mdi-lock"
-                  :append-inner-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
-                  @click:append-inner="showPassword = !showPassword"
-                  required
+        <!-- Animated Background -->
+        <div class="reset-bg d-flex justify-center align-center">
+          <v-container>
+            <v-col cols="12" md="6" lg="4" class="mx-auto">
+              <v-card class="glass-card pa-6 text-center">
+                
+                <!-- Logo -->
+                <v-img
+                  :src="welcomeImg"
+                  alt="Welcome Logo"
+                  contain
+                  max-height="150"
+                  class="mb-1"
                 />
 
-                <!-- Confirm Password -->
-                <v-text-field
-                  v-model="formData.confirmPassword"
-                  label="Confirm Password"
-                  :type="showConfirmPassword ? 'text' : 'password'"
-                  variant="solo-inverted"
-                  prepend-inner-icon="mdi-lock-check"
-                  :append-inner-icon="showConfirmPassword ? 'mdi-eye-off' : 'mdi-eye'"
-                  @click:append-inner="showConfirmPassword = !showConfirmPassword"
-                  required
-                />
+                <h3 class="mb-2 theme-color"><b>Reset Password</b></h3>
+                <p class="small-text mb-4">Enter your new password below.</p>
 
-                <v-btn
-                  class="button mt-4"
-                  type="submit"
-                  block
-                  :loading="formAction.formProcess"
-                >
-                  Update Password
-                </v-btn>
-              </v-form>
+                <v-form @submit.prevent="onSubmit">
+                  <!-- New Password -->
+                  <v-text-field
+                    v-model="formData.password"
+                    label="New Password"
+                    :type="showPassword ? 'text' : 'password'"
+                    variant="solo-inverted"
+                    prepend-inner-icon="mdi-lock"
+                    :append-inner-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
+                    @click:append-inner="showPassword = !showPassword"
+                    required
+                  />
 
-              <!-- Messages -->
-              <p v-if="formAction.formSuccessMessage" class="mt-3 success-text">
-                {{ formAction.formSuccessMessage }}
-              </p>
-              <p v-if="formAction.formErrorMessage" class="mt-3 error-color">
-                {{ formAction.formErrorMessage }}
-              </p>
-            </v-card>
-          </v-col>
-        </v-container>
+                  <!-- Confirm Password -->
+                  <v-text-field
+                    v-model="formData.confirmPassword"
+                    label="Confirm Password"
+                    :type="showConfirmPassword ? 'text' : 'password'"
+                    variant="solo-inverted"
+                    prepend-inner-icon="mdi-lock-check"
+                    :append-inner-icon="showConfirmPassword ? 'mdi-eye-off' : 'mdi-eye'"
+                    @click:append-inner="showConfirmPassword = !showConfirmPassword"
+                    required
+                  />
+
+                  <v-btn
+                    class="button mt-4"
+                    type="submit"
+                    block
+                    :loading="formAction.formProcess"
+                  >
+                    Update Password
+                  </v-btn>
+                </v-form>
+
+                <!-- Messages -->
+                <p v-if="formAction.formSuccessMessage" class="mt-3 success-text">
+                  {{ formAction.formSuccessMessage }}
+                </p>
+                <p v-if="formAction.formErrorMessage" class="mt-3 error-color">
+                  {{ formAction.formErrorMessage }}
+                </p>
+              </v-card>
+            </v-col>
+          </v-container>
+        </div>
       </v-main>
     </v-app>
   </v-responsive>
 </template>
 
 <style scoped>
+/* Animated Background */
+.reset-bg {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5d5e0, #bb9ac9);
+  animation: fadeBg 6s ease-in-out infinite alternate;
+}
+
+@keyframes fadeBg {
+  0% {
+    background: linear-gradient(135deg, #f5d5e0, #bb9ac9);
+  }
+  100% {
+    background: linear-gradient(135deg, #d9b6e3, #f5d5e0);
+  }
+}
+
 .glass-card {
   background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(14px);
@@ -141,35 +160,21 @@ const onSubmit = async () => {
   color: #8c52ff; /* Theme color */
   font-weight: 600;
 }
-
 .success-text {
-    color: #8c52ff;
-    font-weight: 300;
-    animation: bounce 2s ease-in-out infinite;
+  color: #8c52ff;
+  font-weight: 300;
+  animation: bounce 2s ease-in-out infinite;
 }
-
 @keyframes bounce {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-8px);
-  }
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
 }
-
 .error-color {
   color: #e63946;
 }
 @keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 button {
   padding: 0.75rem 1.5rem;
