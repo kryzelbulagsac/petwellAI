@@ -1,16 +1,18 @@
 <script setup>
-import { supabase, formActionDefault } from '@/utils/supabase'
+import { supabase } from '@/utils/supabase'
 import { getAvatarText } from '@/utils/helpers'
-import { useRouter } from 'vue-router'
+import { useRouter, onBeforeRouteUpdate } from 'vue-router'
 import { onMounted, ref, watchEffect } from 'vue'
 import imgWel from '@/assets/images/welcome.png'
 
+// Cat avatars
 import imgCute1 from '@/assets/images/avatar cat/cat1.png'
 import imgCute2 from '@/assets/images/avatar cat/cat2.png'
 import imgCute3 from '@/assets/images/avatar cat/cat3.png'
 import imgCute4 from '@/assets/images/avatar cat/cat4.png'
 import imgCute5 from '@/assets/images/avatar cat/cat5.png'
 
+// Dog avatars
 import imgDog1 from '@/assets/images/avatar dog/dog1.png'
 import imgDog2 from '@/assets/images/avatar dog/dog2.png'
 import imgDog3 from '@/assets/images/avatar dog/dog3.png'
@@ -21,10 +23,7 @@ const router = useRouter()
 
 const drawer = ref(true)
 const theme = ref('light')
-const consultOpen = ref(false)
-const typeOpen = ref(false)
 const currentTime = ref(new Date().toLocaleString())
-const formAction = ref({ ...formActionDefault })
 const avatarDialog = ref(false)
 
 const catAvatars = [imgCute1, imgCute2, imgCute3, imgCute4, imgCute5]
@@ -36,12 +35,13 @@ const userData = ref({
   username: '',
   profileUrl: null,
 })
-const activeMenu = ref(null) // 'consult' | 'type' | 'cat' | 'dog' | null
+const activeMenu = ref(null)
 
 const setMenu = (menu) => {
   activeMenu.value = activeMenu.value === menu ? null : menu
 }
 
+// Theme setup
 const themes = {
   light: {
     '--navbar-bg': '#f5d5e0',
@@ -68,31 +68,31 @@ watchEffect(() => {
   })
 })
 
+// Update time
 setInterval(() => {
   currentTime.value = new Date().toLocaleString()
 }, 1000)
 
-const toggleConsult = () => (consultOpen.value = !consultOpen.value)
-const toggleType = () => (typeOpen.value = !typeOpen.value)
-
+// Get user from Supabase
 const getUser = async () => {
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const { data, error } = await supabase.auth.getUser()
+  if (error) {
+    console.error('Error fetching user:', error)
+    return
+  }
 
+  const user = data?.user
   if (user) {
-    const metadata = user.user_metadata
-    userData.value.email = metadata.email
-    userData.value.username = metadata.username
-    userData.value.initials = getAvatarText(metadata.username)
+    const metadata = user.user_metadata || {}
+    userData.value.email = user.email
+    userData.value.username = metadata.username || ''
+    userData.value.initials = getAvatarText(userData.value.username || user.email)
     userData.value.profileUrl = metadata.profileUrl || null
   }
 }
 
+// Avatar selection
 const selectAvatar = async (avatarUrl) => {
-  userData.value.profileUrl = avatarUrl
-  avatarDialog.value = false
-
   const { error: updateError } = await supabase.auth.updateUser({
     data: { profileUrl: avatarUrl },
   })
@@ -103,12 +103,12 @@ const selectAvatar = async (avatarUrl) => {
   }
 
   await getUser()
+  avatarDialog.value = false
 }
 
+// Logout
 const onLogout = async () => {
-  formAction.value.formProcess = true
   const { error } = await supabase.auth.signOut()
-  formAction.value.formProcess = false
   if (error) {
     console.error('Error during logout:', error)
     return
@@ -116,13 +116,22 @@ const onLogout = async () => {
   router.replace('/')
 }
 
+// Lifecycle
 onMounted(() => {
   getUser()
+})
+
+onBeforeRouteUpdate((to, from, next) => {
+  if (to.path === '/profile') {
+    getUser()
+  }
+  next()
 })
 </script>
 
 <template>
   <v-app>
+    <!-- Top Bar -->
     <v-app-bar app color="var(--navbar-bg)" height="64">
       <v-btn icon @click="drawer = !drawer">
         <v-icon>{{ drawer ? 'mdi-menu-open' : 'mdi-menu' }}</v-icon>
@@ -149,9 +158,6 @@ onMounted(() => {
       </v-container>
 
       <v-list dense>
-        <v-list-item to="/layout" component="RouterLink" class="menu-item">
-          <v-list-item-title>Profile</v-list-item-title>
-        </v-list-item>
         <v-list-item to="/doggo" component="RouterLink" class="menu-item">
           <v-list-item-title>Dashboard</v-list-item-title>
         </v-list-item>
@@ -170,7 +176,7 @@ onMounted(() => {
           </v-list-item-title>
         </v-list-item>
 
-        <!-- Type Menu -->
+        <!-- Type Submenu -->
         <v-list-item
           v-if="activeMenu === 'consult'"
           @click="setMenu('type')"
@@ -211,27 +217,7 @@ onMounted(() => {
 
         <v-divider></v-divider>
 
-        <v-list-item to="/contact" component="RouterLink" class="menu-item">
-          <v-list-item-title>Contact Us</v-list-item-title>
-        </v-list-item>
-
-        <v-divider></v-divider>
-
-        <v-list-item @click="changeTheme" class="menu-item">
-          <v-list-item-title>Change Theme</v-list-item-title>
-        </v-list-item>
-
-        <v-divider></v-divider>
-
-        <v-list-item
-          @click="onLogout"
-          class="menu-item"
-          :loading="formAction.formProcess"
-          :disabled="formAction.formProcess"
-        >
-          <v-list-item-title>Sign Out</v-list-item-title>
-        </v-list-item>
-
+        <!-- Date and Time -->
         <v-card class="date-time-card mt-5" style="padding: 16px; text-align: center">
           <v-card-title class="text-h6">Current Date and Time</v-card-title>
           <v-card-subtitle>
@@ -248,6 +234,7 @@ onMounted(() => {
           <v-col cols="12" sm="8" md="6">
             <v-card class="pa-6" elevation="10" rounded="lg">
               <div class="text-center">
+                <!-- Avatar -->
                 <v-avatar
                   size="110"
                   class="mx-auto mb-3 profile-avatar"
@@ -263,19 +250,41 @@ onMounted(() => {
 
                 <p class="text-caption grey--text mb-1">Click image to choose avatar</p>
 
+                <!-- Username + Email -->
                 <h3 class="text-h6 mt-2 font-weight-bold">{{ userData.username }}</h3>
                 <p class="text-body-2 grey--text text--darken-2">{{ userData.email }}</p>
 
                 <v-divider class="my-5" />
 
-                <v-btn color="error" variant="outlined" rounded @click="onLogout"> Logout </v-btn>
+                <!-- Buttons -->
+                <v-btn
+                  block
+                  color="info"
+                  variant="outlined"
+                  rounded
+                  class="mt-2"
+                  @click="changeTheme"
+                >
+                  Change Theme
+                </v-btn>
+
+                <v-btn
+                  block
+                  color="error"
+                  variant="outlined"
+                  rounded
+                  class="mt-2"
+                  @click="onLogout"
+                >
+                  Logout
+                </v-btn>
               </div>
             </v-card>
           </v-col>
         </v-row>
       </v-container>
 
-      <!-- Avatar Picker Dialog -->
+      <!-- Avatar Picker -->
       <v-dialog v-model="avatarDialog" max-width="600">
         <v-card>
           <v-card-title class="text-h6">Choose Your Avatar</v-card-title>
@@ -284,25 +293,18 @@ onMounted(() => {
             <h4 class="mb-2">Cats</h4>
             <v-row>
               <v-col v-for="(img, index) in catAvatars" :key="'cat-' + index" cols="4">
-                <v-img
-                  :src="img"
-                  class="avatar-choice"
-                  @click="selectAvatar(img)"
-                  height="100"
-                  cover
-                />
+                <div class="avatar-choice-wrapper" @click="selectAvatar(img)">
+                  <v-img :src="img" class="avatar-choice" height="100" cover />
+                </div>
               </v-col>
             </v-row>
+
             <h4 class="mt-4 mb-2">Dogs</h4>
             <v-row>
               <v-col v-for="(img, index) in dogAvatars" :key="'dog-' + index" cols="4">
-                <v-img
-                  :src="img"
-                  class="avatar-choice"
-                  @click="selectAvatar(img)"
-                  height="100"
-                  cover
-                />
+                <div class="avatar-choice-wrapper" @click="selectAvatar(img)">
+                  <v-img :src="img" class="avatar-choice" height="100" cover />
+                </div>
               </v-col>
             </v-row>
           </v-card-text>
@@ -313,6 +315,24 @@ onMounted(() => {
         </v-card>
       </v-dialog>
     </v-main>
+
+    <!-- Bottom Navigation -->
+    <v-bottom-navigation app grow height="64" color="var(--navbar-bg)">
+      <v-btn value="home" @click="router.push('/doggo')">
+        <v-icon>mdi-home</v-icon>
+        Home
+      </v-btn>
+
+      <v-btn value="consult" @click="router.push('/consult')">
+        <v-icon>mdi-stethoscope</v-icon>
+        Consult
+      </v-btn>
+
+      <v-btn value="profile" @click="router.push('/profile')">
+        <v-icon>mdi-account</v-icon>
+        Profile
+      </v-btn>
+    </v-bottom-navigation>
   </v-app>
 </template>
 
@@ -375,6 +395,20 @@ onMounted(() => {
 }
 
 .avatar-choice:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.avatar-choice-wrapper {
+  cursor: pointer;
+  border-radius: 12px;
+  overflow: hidden;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.avatar-choice-wrapper:hover {
   transform: scale(1.1);
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 }

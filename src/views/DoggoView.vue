@@ -34,30 +34,12 @@ const themes = {
   },
 }
 
-const changeTheme = () => {
-  theme.value = theme.value === 'light' ? 'dark' : theme.value === 'dark' ? 'custom' : 'light'
-}
-
 watchEffect(() => {
   const selectedTheme = themes[theme.value]
   Object.entries(selectedTheme).forEach(([key, value]) => {
     document.documentElement.style.setProperty(key, value)
   })
 })
-
-const onLogout = async () => {
-  formAction.value = { ...formActionDefault, formProcess: true }
-
-  const { error } = await supabase.auth.signOut()
-  if (error) {
-    console.error('Error during logout:', error)
-    formAction.value.formProcess = false
-    return
-  }
-
-  formAction.value.formProcess = false
-  router.replace('/')
-}
 
 // 📰 Headlines state
 const headlines = ref([])
@@ -127,9 +109,6 @@ setInterval(() => {
           <v-list-item to="/profile" component="RouterLink" class="menu-item">
             <v-list-item-title>Profile</v-list-item-title>
           </v-list-item>
-          <v-list-item class="menu-item">
-            <v-list-item-title>Dashboard</v-list-item-title>
-          </v-list-item>
 
           <v-divider></v-divider>
 
@@ -186,27 +165,7 @@ setInterval(() => {
 
           <v-divider></v-divider>
 
-          <v-list-item to="/contact" component="RouterLink" class="menu-item">
-            <v-list-item-title>Contact Us</v-list-item-title>
-          </v-list-item>
-
-          <v-divider></v-divider>
-
-          <v-list-item @click="changeTheme" class="menu-item">
-            <v-list-item-title>Change Theme</v-list-item-title>
-          </v-list-item>
-
-          <v-divider></v-divider>
-
-          <v-list-item
-            @click="onLogout"
-            class="menu-item"
-            :loading="formAction.formProcess"
-            :disabled="formAction.formProcess"
-          >
-            <v-list-item-title>Sign Out</v-list-item-title>
-          </v-list-item>
-
+          <!-- ✅ Date & Time only -->
           <v-card class="date-time-card mt-5" style="padding: 16px; text-align: center">
             <v-card-title class="text-h6">Current Date and Time</v-card-title>
             <v-card-subtitle>
@@ -271,7 +230,7 @@ setInterval(() => {
 
     <!-- ✅ Bottom Navigation -->
     <v-bottom-navigation app grow height="64" color="var(--navbar-bg)">
-      <v-btn value="home" @click="router.push('/home')">
+      <v-btn value="home" @click="router.push('/doggo')">
         <v-icon>mdi-home</v-icon>
         Home
       </v-btn>
@@ -365,7 +324,10 @@ setInterval(() => {
   }
   .welcome-img {
     height: 60px;
+  }
+  .welcome-img {
     max-width: 100%;
+    height: auto;
     display: block;
     margin: 0 auto;
   }
